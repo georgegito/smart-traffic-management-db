@@ -16,6 +16,11 @@ CREATE TABLE Area
 	traffic_metric ENUM('VERY_LOW', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'),
 	PRIMARY KEY (id));
     
+CREATE TABLE Route 	 		   
+	(id CHAR(10),
+	duration_in_min INT,
+	PRIMARY KEY (id));
+    
 CREATE TABLE Vehicle 		   
 	(licence_plate CHAR(10),
 	type ENUM('CAR', 'MOTORCYCLE', 'TRUCK') NOT NULL,
@@ -26,14 +31,10 @@ CREATE TABLE Vehicle
 	destination_area_id CHAR(10),
 	PRIMARY KEY (licence_plate, driver_id),
 	FOREIGN KEY (driver_id) REFERENCES Driver(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (route_id) REFERENCES Route(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (current_area_id) REFERENCES Area(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (starting_area_id) REFERENCES Area(id) ON DELETE SET NULL ON UPDATE CASCADE,
 	FOREIGN KEY (destination_area_id) REFERENCES Area(id) ON DELETE SET NULL ON UPDATE CASCADE);
-                      
-CREATE TABLE Route 	 		   
-	(id CHAR(10),
-	duration_in_min INT,
-	PRIMARY KEY (id));
 
 CREATE TABLE Violation  	   
 	(id CHAR(10),
