@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS smart_traffic_management;
 CREATE DATABASE IF NOT EXISTS smart_traffic_management;
 USE smart_traffic_management;
 
+
 -- create tables
 
 CREATE TABLE Driver
@@ -104,3 +105,31 @@ CREATE DEFINER=`root`@`localhost` TRIGGER `driver_BEFORE_UPDATE` BEFORE UPDATE O
 END  $$
 DELIMITER ; 
 
+
+-- create views
+
+CREATE VIEW `Empty Parking Slots` AS
+SELECT name AS 'area name', area_id AS 'area id', location AS 'parking location'
+FROM (
+		( 
+			SELECT name, id
+			FROM Area
+		) AS _Area
+		JOIN
+		(
+			SELECT area_id, location
+			FROM Parking_slot
+			WHERE status = 'EMPTY'
+		) AS _Parking_slot
+		ON _Area.id = _Parking_slot.area_id
+     );
+     
+CREATE VIEW `Violators` AS
+SELECT Driver.id AS 'driver id', Driver.name AS 'name', Driver.age AS 'age', Driver.gender AS 'gender', Driver.mobile_number AS 'mobile number', Violation.type AS 'violation type', Violation.fee_in_euros AS 'fee'
+FROM (
+		Driver
+		JOIN
+		Violation
+		ON Driver.id = Violation.driver_id
+     );
+     
