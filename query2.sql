@@ -1,3 +1,5 @@
-SELECT area.name
-FROM area
-WHERE traffic_metric = 'LOW' OR traffic_metric = 'VERY_LOW'
+-- names of areas with very low or low traffic metric
+
+SELECT Area.name AS 'Areas with very low or low traffic'
+FROM Area
+WHERE Area.traffic_metric = 'VERY_LOW' OR Area.traffic_metric = 'LOW'
