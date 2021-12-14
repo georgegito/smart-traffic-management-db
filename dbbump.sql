@@ -2,6 +2,8 @@ DROP DATABASE IF EXISTS smart_traffic_management;
 CREATE DATABASE IF NOT EXISTS smart_traffic_management;
 USE smart_traffic_management;
 
+-- create tables
+
 CREATE TABLE Driver
 	(id CHAR(10) NOT NULL,
 	name VARCHAR(30) NOT NULL,
@@ -82,4 +84,23 @@ CREATE TABLE Neighboring_Areas
 	PRIMARY KEY (area1_id, area2_id),
 	FOREIGN KEY (area1_id) REFERENCES Area(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY (area2_id) REFERENCES Area(id) ON DELETE CASCADE ON UPDATE CASCADE);
+    
+    
+-- create triggers
+    
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `driver_BEFORE_INSERT` BEFORE INSERT ON `driver` FOR EACH ROW BEGIN
+	IF NEW.age < 18 OR NEW.age > 100 THEN
+		SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Invalid driver age';
+    END IF;
+END $$
+DELIMITER ;   
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `driver_BEFORE_UPDATE` BEFORE UPDATE ON `driver` FOR EACH ROW BEGIN
+	IF NEW.age < 18 OR NEW.age > 100 THEN
+		SIGNAL SQLSTATE '20000' SET MESSAGE_TEXT = 'Invalid driver age';
+    END IF;
+END  $$
+DELIMITER ; 
 
