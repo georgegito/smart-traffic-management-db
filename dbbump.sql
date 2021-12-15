@@ -100,9 +100,73 @@ DELIMITER ;
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` TRIGGER `driver_BEFORE_UPDATE` BEFORE UPDATE ON `driver` FOR EACH ROW BEGIN
 	IF NEW.age < 18 OR NEW.age > 100 THEN
-		SIGNAL SQLSTATE '20000' SET MESSAGE_TEXT = 'Invalid driver age';
+		SIGNAL SQLSTATE '15000' SET MESSAGE_TEXT = 'Invalid driver age';
     END IF;
 END  $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `violation_BEFORE_INSERT` BEFORE INSERT ON `violation` FOR EACH ROW BEGIN
+	IF NEW.fee_in_euros < 0 THEN
+		SIGNAL SQLSTATE '20000' SET MESSAGE_TEXT = 'Invalid violation fee';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `violation_BEFORE_UPDATE` BEFORE UPDATE ON `violation` FOR EACH ROW BEGIN
+	IF NEW.fee_in_euros < 0 THEN
+		SIGNAL SQLSTATE '25000' SET MESSAGE_TEXT = 'Invalid violation fee';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `route_BEFORE_INSERT` BEFORE INSERT ON `route` FOR EACH ROW BEGIN
+	IF NEW.duration_in_min < 0 THEN
+		SIGNAL SQLSTATE '30000' SET MESSAGE_TEXT = 'Invalid route duration';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `route_BEFORE_UPDATE` BEFORE UPDATE ON `route` FOR EACH ROW BEGIN
+	IF NEW.duration_in_min < 0 THEN
+		SIGNAL SQLSTATE '35000' SET MESSAGE_TEXT = 'Invalid route duration';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `tolls_BEFORE_INSERT` BEFORE INSERT ON `tolls` FOR EACH ROW BEGIN
+	IF NEW.toll_in_euros < 0 THEN
+		SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = 'Invalid toll';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `tolls_BEFORE_UPDATE` BEFORE UPDATE ON `tolls` FOR EACH ROW BEGIN
+	IF NEW.toll_in_euros < 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid toll';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `neighboring_areas_BEFORE_INSERT` BEFORE INSERT ON `neighboring_areas` FOR EACH ROW BEGIN
+	IF NEW.area1_id = NEW.area2_id THEN
+		SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = 'Invalid neighboring areas';
+    END IF;
+END $$
+DELIMITER ; 
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `neighboring_areas_BEFORE_UPDATE` BEFORE UPDATE ON `neighboring_areas` FOR EACH ROW BEGIN
+	IF NEW.area1_id = NEW.area2_id THEN
+		SIGNAL SQLSTATE '55000' SET MESSAGE_TEXT = 'Invalid neighboring areas';
+    END IF;
+END $$
 DELIMITER ; 
 
 
@@ -122,7 +186,8 @@ FROM (
 			WHERE status = 'EMPTY'
 		) AS _Parking_slot
 		ON _Area.id = _Parking_slot.area_id
-     );
+     )
+     ORDER BY _Area.name;
      
 CREATE VIEW `Violators` AS
 SELECT Driver.id AS 'driver id', Driver.name AS 'name', Driver.age AS 'age', Driver.gender AS 'gender', Driver.mobile_number AS 'mobile number', Violation.type AS 'violation type', Violation.fee_in_euros AS 'fee'
@@ -131,5 +196,6 @@ FROM (
 		JOIN
 		Violation
 		ON Driver.id = Violation.driver_id
-     );
+     )
+     ORDER BY Driver.id;
      
