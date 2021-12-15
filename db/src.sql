@@ -90,7 +90,7 @@ CREATE TABLE Neighboring_Areas
 -- create triggers
     
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `driver_BEFORE_INSERT` BEFORE INSERT ON `driver` FOR EACH ROW BEGIN
+CREATE TRIGGER `driver_BEFORE_INSERT` BEFORE INSERT ON `driver` FOR EACH ROW BEGIN
 	IF NEW.age < 18 OR NEW.age > 100 THEN
 		SIGNAL SQLSTATE '10000' SET MESSAGE_TEXT = 'Invalid driver age';
     END IF;
@@ -98,7 +98,7 @@ END $$
 DELIMITER ;   
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `driver_BEFORE_UPDATE` BEFORE UPDATE ON `driver` FOR EACH ROW BEGIN
+CREATE TRIGGER `driver_BEFORE_UPDATE` BEFORE UPDATE ON `driver` FOR EACH ROW BEGIN
 	IF NEW.age < 18 OR NEW.age > 100 THEN
 		SIGNAL SQLSTATE '15000' SET MESSAGE_TEXT = 'Invalid driver age';
     END IF;
@@ -106,7 +106,7 @@ END  $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `violation_BEFORE_INSERT` BEFORE INSERT ON `violation` FOR EACH ROW BEGIN
+CREATE TRIGGER `violation_BEFORE_INSERT` BEFORE INSERT ON `violation` FOR EACH ROW BEGIN
 	IF NEW.fee_in_euros < 0 THEN
 		SIGNAL SQLSTATE '20000' SET MESSAGE_TEXT = 'Invalid violation fee';
     END IF;
@@ -114,7 +114,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `violation_BEFORE_UPDATE` BEFORE UPDATE ON `violation` FOR EACH ROW BEGIN
+CREATE TRIGGER `violation_BEFORE_UPDATE` BEFORE UPDATE ON `violation` FOR EACH ROW BEGIN
 	IF NEW.fee_in_euros < 0 THEN
 		SIGNAL SQLSTATE '25000' SET MESSAGE_TEXT = 'Invalid violation fee';
     END IF;
@@ -122,7 +122,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `route_BEFORE_INSERT` BEFORE INSERT ON `route` FOR EACH ROW BEGIN
+CREATE TRIGGER `route_BEFORE_INSERT` BEFORE INSERT ON `route` FOR EACH ROW BEGIN
 	IF NEW.duration_in_min < 0 THEN
 		SIGNAL SQLSTATE '30000' SET MESSAGE_TEXT = 'Invalid route duration';
     END IF;
@@ -130,7 +130,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `route_BEFORE_UPDATE` BEFORE UPDATE ON `route` FOR EACH ROW BEGIN
+CREATE TRIGGER `route_BEFORE_UPDATE` BEFORE UPDATE ON `route` FOR EACH ROW BEGIN
 	IF NEW.duration_in_min < 0 THEN
 		SIGNAL SQLSTATE '35000' SET MESSAGE_TEXT = 'Invalid route duration';
     END IF;
@@ -138,7 +138,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `tolls_BEFORE_INSERT` BEFORE INSERT ON `tolls` FOR EACH ROW BEGIN
+CREATE TRIGGER `tolls_BEFORE_INSERT` BEFORE INSERT ON `tolls` FOR EACH ROW BEGIN
 	IF NEW.toll_in_euros < 0 THEN
 		SIGNAL SQLSTATE '40000' SET MESSAGE_TEXT = 'Invalid toll';
     END IF;
@@ -146,7 +146,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `tolls_BEFORE_UPDATE` BEFORE UPDATE ON `tolls` FOR EACH ROW BEGIN
+CREATE TRIGGER `tolls_BEFORE_UPDATE` BEFORE UPDATE ON `tolls` FOR EACH ROW BEGIN
 	IF NEW.toll_in_euros < 0 THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid toll';
     END IF;
@@ -154,7 +154,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `neighboring_areas_BEFORE_INSERT` BEFORE INSERT ON `neighboring_areas` FOR EACH ROW BEGIN
+CREATE TRIGGER `neighboring_areas_BEFORE_INSERT` BEFORE INSERT ON `neighboring_areas` FOR EACH ROW BEGIN
 	IF NEW.area1_id = NEW.area2_id THEN
 		SIGNAL SQLSTATE '50000' SET MESSAGE_TEXT = 'Invalid neighboring areas';
     END IF;
@@ -162,7 +162,7 @@ END $$
 DELIMITER ; 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` TRIGGER `neighboring_areas_BEFORE_UPDATE` BEFORE UPDATE ON `neighboring_areas` FOR EACH ROW BEGIN
+CREATE TRIGGER `neighboring_areas_BEFORE_UPDATE` BEFORE UPDATE ON `neighboring_areas` FOR EACH ROW BEGIN
 	IF NEW.area1_id = NEW.area2_id THEN
 		SIGNAL SQLSTATE '55000' SET MESSAGE_TEXT = 'Invalid neighboring areas';
     END IF;
@@ -297,14 +297,14 @@ GRANT ALL PRIVILEGES ON stm.* TO 'admin'@'%';
 
 DROP USER IF EXISTS 'user'@'%';
 CREATE USER 'user'@'%' IDENTIFIED BY '12345';
-GRANT SELECT, INSERT, UPDATE ON stm.driver TO 'admin'@'%';
-GRANT SELECT, INSERT, UPDATE ON stm.vehicle TO 'admin'@'%';
-GRANT SELECT ON stm.route TO 'admin'@'%';
-GRANT SELECT ON stm.route_area TO 'admin'@'%';
-GRANT SELECT ON stm.area TO 'admin'@'%';
-GRANT SELECT ON stm.tolls TO 'admin'@'%';
-GRANT SELECT ON stm.`empty parking slots` TO 'admin'@'%';
-GRANT SELECT ON stm.`violators` TO 'admin'@'%';
+GRANT SELECT, INSERT, UPDATE ON stm.driver TO 'user'@'%';
+GRANT SELECT, INSERT, UPDATE ON stm.vehicle TO 'user'@'%';
+GRANT SELECT ON stm.route TO 'user'@'%';
+GRANT SELECT ON stm.route_area TO 'user'@'%';
+GRANT SELECT ON stm.area TO 'user'@'%';
+GRANT SELECT ON stm.tolls TO 'user'@'%';
+GRANT SELECT ON stm.`empty parking slots` TO 'user'@'%';
+GRANT SELECT ON stm.`violators` TO 'user'@'%';
 
 DROP USER IF EXISTS 'officer'@'%';
 CREATE USER 'officer'@'%' IDENTIFIED BY '12345';
